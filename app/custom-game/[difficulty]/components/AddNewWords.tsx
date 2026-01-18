@@ -3,24 +3,30 @@ import { FormEvent, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, X, Type, Eraser, Settings2, AlertCircle, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import GameCreationAlgorithm from "@/app/algorithm/GameCreationAlgorithm";
+import { redirect } from "next/navigation";
 
 interface AddNewWordsProps {
   difficulty: string;
 }
 
 export default function AddNewWords({ difficulty }: AddNewWordsProps) {
+  const [gridSize, setGridSize] = useState<number>(0);
   const [limit, setLimit] = useState<number>(0);
   const [word, setWord] = useState<string>("");
   const [newWords, setNewWords] = useState<string[]>([]);
-  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [tempLimit, setTempLimit] = useState<string>("10");
+  const [tempGridSize, setTempGridSize] = useState<string>("8");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSetCustomLimit = () => {
-    const val = parseInt(tempLimit);
-    if (!isNaN(val) && val > 0 && val <= 20) {
-      setLimit(val);
-      setShowLimitModal(false);
+  const handleSetCustomSettings = () => {
+    const limitVal = parseInt(tempLimit);
+    const gridVal = parseInt(tempGridSize);
+    if (!isNaN(limitVal) && limitVal > 0 && limitVal <= 20 && !isNaN(gridVal) && gridVal > 0 && gridVal <= 20) {
+      setLimit(limitVal);
+      setGridSize(gridVal);
+      setShowSettingsModal(false);
     }
   };
 
@@ -53,11 +59,24 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
 
   useEffect(() => {
     switch (difficulty) {
-      case "easy": setLimit(6); break;
-      case "medium": setLimit(10); break;
-      case "hard": setLimit(15); break;
-      case "custom": setShowLimitModal(true); break;
-      default: setLimit(6);
+      case "easy":
+        setGridSize(8);
+        setLimit(6);
+        break;
+      case "medium":
+        setGridSize(12);
+        setLimit(10);
+        break;
+      case "hard":
+        setGridSize(16);
+        setLimit(15);
+        break;
+      case "custom":
+        setShowSettingsModal(true);
+        break;
+      default:
+        setGridSize(8);
+        setLimit(6);
     }
   }, [difficulty]);
 
@@ -125,7 +144,7 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
           </div>
           <input
             type="text"
-            maxLength={20}
+            maxLength={Math.max()}
             disabled={newWords.length >= limit}
             placeholder={newWords.length >= limit ? "LIMIT REACHED" : "ENTER WORD"}
             value={word}
@@ -166,6 +185,11 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
           type="button"
           disabled={newWords.length === 0}
           className="w-full h-16 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl text-white font-black text-sm tracking-[0.3em] shadow-xl disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-3 relative overflow-hidden group"
+          onClick={(e) => {
+            const words = encodeURIComponent(newWords.join(","));
+            const encodedGridSize = encodeURIComponent(gridSize);
+            redirect(`/play-game/${difficulty}?words=${words}&grid-size=${encodedGridSize}`);
+          }}
         >
           <Sparkles size={18} className="animate-pulse" />
           CREATE GAME
@@ -174,14 +198,14 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
       </form>
 
       <AnimatePresence>
-        {showLimitModal && (
+        {showSettingsModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-              onClick={() => difficulty !== 'custom' && setShowLimitModal(false)}
+              onClick={() => difficulty !== 'custom' && setShowSettingsModal(false)}
             />
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -193,20 +217,34 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
                 <div className="p-4 bg-indigo-50 rounded-2xl mb-4">
                   <Settings2 className="w-8 h-8 text-indigo-500" />
                 </div>
-                <h2 className="text-xl font-black text-slate-800 mb-2">Word Limit</h2>
-                <p className="text-sm text-slate-500 mb-6 font-medium">Set max words (Max 20)</p>
-                <input
-                  type="number" min="1" max="20" value={tempLimit}
-                  onChange={(e) => setTempLimit(e.target.value)}
-                  className="w-full h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center text-2xl font-black text-slate-700 outline-none mb-6"
-                />
+                <h2 className="text-xl font-black text-slate-800 mb-2">Custom Settings</h2>
+                <p className="text-sm text-slate-500 mb-4 font-medium">Configure your game</p>
+                
+                <div className="w-full mb-6">
+                  <label className="text-xs font-bold text-slate-600 mb-2 block">Grid Size (Max 20)</label>
+                  <input
+                    type="number" min="1" max="20" value={tempGridSize}
+                    onChange={(e) => setTempGridSize(e.target.value)}
+                    className="w-full h-12 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center text-lg font-black text-slate-700 outline-none"
+                  />
+                </div>
+
+                <div className="w-full mb-6">
+                  <label className="text-xs font-bold text-slate-600 mb-2 block">Word Limit (Max 20)</label>
+                  <input
+                    type="number" min="1" max="20" value={tempLimit}
+                    onChange={(e) => setTempLimit(e.target.value)}
+                    className="w-full h-12 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center text-lg font-black text-slate-700 outline-none"
+                  />
+                </div>
+
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={handleSetCustomLimit}
+                  onClick={handleSetCustomSettings}
                   className="w-full h-14 bg-indigo-500 text-white rounded-2xl font-black tracking-widest shadow-lg"
                 >
-                  SET LIMIT
+                  APPLY SETTINGS
                 </motion.button>
               </div>
             </motion.div>
