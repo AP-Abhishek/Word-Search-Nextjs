@@ -19,28 +19,28 @@ const customOptions = [
   {
     name: "Easy",
     size: "8x8",
-    href: "/easy",
+    href: "/custom-game/easy",
     icon: Grid2X2,
     color: "from-emerald-400 to-teal-500",
   },
   {
     name: "Medium",
     size: "12x12",
-    href: "/medium",
+    href: "/custom-game/medium",
     icon: Grid3X3,
     color: "from-amber-400 to-orange-500",
   },
   {
     name: "Hard",
     size: "16x16",
-    href: "/hard",
+    href: "/custom-game/hard",
     icon: LayoutGrid,
     color: "from-rose-400 to-red-500",
   },
   {
     name: "Custom",
     size: "Manual",
-    href: "/custom",
+    href: "/custom-game/custom",
     icon: Settings2,
     color: "from-slate-500 to-slate-700",
   }

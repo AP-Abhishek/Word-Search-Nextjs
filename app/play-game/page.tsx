@@ -18,21 +18,21 @@ const shimmerVariants = {
 const difficulties = [
   {
     name: "Easy",
-    href: "/easy",
+    href: "/play-game/easy",
     icon: Zap,
     color: "from-green-400 via-emerald-500 to-teal-500",
     delay: "0s"
   },
   {
     name: "Medium",
-    href: "/medium",
+    href: "/play-game/medium",
     icon: Flame,
     color: "from-orange-400 via-orange-500 to-red-500",
     delay: "0.2s"
   },
   {
     name: "Hard",
-    href: "/hard",
+    href: "/play-game/hard",
     icon: Skull,
     color: "from-slate-700 via-slate-800 to-slate-900",
     delay: "0.4s"
