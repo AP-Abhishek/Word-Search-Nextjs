@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "./components/Header";
+import ConditionalHeader from "./components/ConditionalHeader";
 
 export const metadata: Metadata = {
   title: "Word Search",
@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="w-full h-screen flex flex-col">
-        <Header />
+        <ConditionalHeader />
         <main className="flex-1">
           {children}
         </main>
