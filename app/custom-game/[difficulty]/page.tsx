@@ -1,3 +1,5 @@
+import AddNewWords from "./components/AddNewWords";
+
 interface CreateCustomGameProps {
   params: Promise<{ difficulty: string }>;
 }
@@ -5,9 +7,8 @@ interface CreateCustomGameProps {
 export default async function CreateCustomGame({ params }: CreateCustomGameProps) {
   const { difficulty } = await params;
   return (
-    <>
-      CREATE CUSTOM GAME
-      {difficulty}
-    </>
+    <div>
+      <AddNewWords difficulty={difficulty}/>
+    </div>
   );
 }
