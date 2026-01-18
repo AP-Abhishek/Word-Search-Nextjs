@@ -24,10 +24,10 @@ export default function GameBoard({ difficulty }: GameBoardProps) {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="p-2 md:p-4 w-full h-full flex items-center justify-center"
+      className="p-1 md:p-4 w-full h-full flex items-center justify-center"
     >
       <div
-        className="grid gap-1 bg-slate-200/50 p-1.5 rounded-xl shadow-inner max-w-full max-h-full"
+        className="grid gap-1 bg-slate-200/50 p-1 rounded-xl shadow-inner max-w-full max-h-full"
         style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
       >
         <AnimatePresence>
@@ -37,7 +37,7 @@ export default function GameBoard({ difficulty }: GameBoardProps) {
               whileHover={{ scale: 1.05, zIndex: 10 }}
               whileTap={{ scale: 0.95 }}
               className={`
-                size-10 md:size-16
+                size-[2.35rem] md:size-16
                 flex items-center justify-center 
                 text-[10px] sm:text-sm md:text-base font-black uppercase 
                 rounded-md cursor-pointer transition-all
