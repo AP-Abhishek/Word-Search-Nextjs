@@ -1,29 +1,29 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion } from "framer-motion";
+import GameCreationAlgorithm from "@/app/algorithm/GameCreationAlgorithm";
 
 interface GameBoardProps {
-  difficulty: string;
+  gridSize: number;
+  words: string[];
 }
 
-export default function GameBoard({ difficulty }: GameBoardProps) {
+export default function GameBoard({ gridSize, words }: GameBoardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [gridSize, setGridSize] = useState(12);
   const [boardData, setBoardData] = useState<string[][]>([]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const size = difficulty === 'easy' ? 8 : difficulty === 'hard' ? 16 : 12;
-    setGridSize(size);
-    const matrix = Array.from({ length: size }, () =>
-      Array.from({ length: size }, () => 
-        String.fromCharCode(65 + Math.floor(Math.random() * 26))
-      )
-    );
-    setBoardData(matrix);
     setMounted(true);
-  }, [difficulty]);
+  }, []);
+
+  useEffect(() => {
+    if (words.length > 0) {
+      const data = GameCreationAlgorithm({ gridSize, words });
+      setBoardData(data);
+    }
+  }, [gridSize, words]);
 
   const drawBoard = useCallback(async () => {
     const canvas = canvasRef.current;
@@ -33,11 +33,11 @@ export default function GameBoard({ difficulty }: GameBoardProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    await document.fonts.load("900 16px Inter"); 
+    await document.fonts.load("900 16px Inter");
 
     const dpr = window.devicePixelRatio || 1;
     const rect = container.getBoundingClientRect();
-    
+
     const isMobile = window.innerWidth < 768;
     const padding = isMobile ? -8 : 48;
     const size = Math.min(rect.width, rect.height) - padding;
@@ -53,23 +53,23 @@ export default function GameBoard({ difficulty }: GameBoardProps) {
 
     ctx.fillStyle = "#ffffff";
     ctx.beginPath();
-    ctx.roundRect(0, 0, size, size, 8); 
+    ctx.roundRect(0, 0, size, size, 8);
     ctx.fill();
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = `900 ${fontSize}px Inter, system-ui, -apple-system, sans-serif`;
-    
+
     boardData.forEach((row, rowIndex) => {
       row.forEach((char, colIndex) => {
         const x = colIndex * cellSize + cellSize / 2;
         const y = rowIndex * cellSize + cellSize / 2;
-        ctx.fillStyle = "#0f172a"; 
+        ctx.fillStyle = "#0f172a";
         ctx.fillText(char, x, y);
       });
     });
 
-    ctx.strokeStyle = "rgba(226, 232, 240, 0.4)"; 
+    ctx.strokeStyle = "rgba(226, 232, 240, 0.4)";
     ctx.lineWidth = 1;
     for (let i = 0; i <= gridSize; i++) {
       const pos = i * cellSize;
@@ -79,28 +79,22 @@ export default function GameBoard({ difficulty }: GameBoardProps) {
   }, [boardData, gridSize]);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || boardData.length === 0) return;
     
-    const container = containerRef.current;
-    if (!container) return;
-
     drawBoard();
 
     const resizeObserver = new ResizeObserver(() => {
       drawBoard();
     });
 
-    resizeObserver.observe(container);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
 
-    window.addEventListener("resize", drawBoard);
-    
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", drawBoard);
-    };
-  }, [mounted, drawBoard]);
+    return () => resizeObserver.disconnect();
+  }, [mounted, boardData, drawBoard]);
 
-  if (!mounted) return null;
+  if (!mounted) return <div className="h-full w-full bg-slate-100 animate-pulse" />;
 
   return (
     <motion.div

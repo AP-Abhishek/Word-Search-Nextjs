@@ -4,9 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search } from "lucide-react";
 import Link from "next/link";
 
-export default function WordsContainer() {
-  const [words] = useState<string[]>(["APPLE", "BANANA", "MANGO", "ORANGE", "CHERRY", "GRAPE", "PEACH", "LEMON", "MELON", "KIWI", "BERRY"]);
-  const [foundWords] = useState<string[]>(["APPLE", "PEACH"]);
+interface WordsContainerProps {
+  words: string[];
+}
+
+export default function WordsContainer({ words }: WordsContainerProps) {
+  const [foundWords, setFoundWords] = useState<string[]>([]);
 
   return (
     <motion.div
@@ -14,7 +17,6 @@ export default function WordsContainer() {
       animate={{ opacity: 1, y: 0 }}
       className="w-full h-full bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-slate-100 flex flex-col p-4 md:p-6"
     >
-      {/* Game Header Section */}
       <div className="mb-4 md:mb-6 pb-3 md:pb-4 border-b border-slate-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-3">
