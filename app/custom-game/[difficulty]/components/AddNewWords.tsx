@@ -1,7 +1,8 @@
 "use client";
 import { FormEvent, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, Type, Eraser, Settings2, AlertCircle } from "lucide-react";
+import { Sparkles, X, Type, Eraser, Settings2, AlertCircle, ChevronLeft } from "lucide-react";
+import Link from "next/link";
 
 interface AddNewWordsProps {
   difficulty: string;
@@ -26,21 +27,16 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
   const addNewWord = (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-
     const formattedWord = word.toUpperCase().trim();
-
     if (!formattedWord) return;
-
     if (newWords.includes(formattedWord)) {
       setError("Word already added!");
       return;
     }
-
     if (newWords.length >= limit) {
       setError("Limit reached!");
       return;
     }
-
     setNewWords((prev) => [...prev, formattedWord]);
     setWord("");
   };
@@ -66,7 +62,18 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
   }, [difficulty]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full max-w-2xl mx-auto p-2 md:p-6 relative">
+    <div className="flex flex-col items-center justify-center min-h-[70vh] w-full max-w-2xl mx-auto p-2 md:p-6 relative">
+      <div className="w-full flex justify-start mb-4">
+        <Link href="/custom-game">
+          <motion.button
+            whileHover={{ x: -4 }}
+            className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors text-xs font-black uppercase tracking-widest"
+          >
+            <ChevronLeft size={16} /> BACK
+          </motion.button>
+        </Link>
+      </div>
+
       <motion.div
         layout
         className="w-full min-h-40 bg-white/60 backdrop-blur-xl rounded-4xl border border-white/80 p-6 mb-6 shadow-xl relative"
@@ -118,7 +125,7 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
           </div>
           <input
             type="text"
-            maxLength={32}
+            maxLength={20}
             disabled={newWords.length >= limit}
             placeholder={newWords.length >= limit ? "LIMIT REACHED" : "ENTER WORD"}
             value={word}
@@ -187,22 +194,17 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
                   <Settings2 className="w-8 h-8 text-indigo-500" />
                 </div>
                 <h2 className="text-xl font-black text-slate-800 mb-2">Word Limit</h2>
-                <p className="text-sm text-slate-500 mb-6 font-medium">How many words should your puzzle have? (Max 20)</p>
-
+                <p className="text-sm text-slate-500 mb-6 font-medium">Set max words (Max 20)</p>
                 <input
-                  type="number"
-                  min="1"
-                  max="20"
-                  value={tempLimit}
+                  type="number" min="1" max="20" value={tempLimit}
                   onChange={(e) => setTempLimit(e.target.value)}
-                  className="w-full h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center text-2xl font-black text-slate-700 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-50 outline-none transition-all mb-6"
+                  className="w-full h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center text-2xl font-black text-slate-700 outline-none mb-6"
                 />
-
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSetCustomLimit}
-                  className="w-full h-14 bg-indigo-500 text-white rounded-2xl font-black tracking-widest shadow-lg shadow-indigo-100"
+                  className="w-full h-14 bg-indigo-500 text-white rounded-2xl font-black tracking-widest shadow-lg"
                 >
                   SET LIMIT
                 </motion.button>
@@ -214,3 +216,4 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
     </div>
   );
 }
+
