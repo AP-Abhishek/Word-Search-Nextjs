@@ -1,1 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap");
 @import "tailwindcss";
+
+@theme {
+    --default-font-family: "Cherry Bomb One", system-ui;
+}
+
+@utility flex-center {
+    @apply flex items-center justify-center;
+}
+
+@keyframes gradient-shift {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: linear-gradient(-45deg, #fef3c7, #fde68a, #fcd34d, #fbbf24, #f59e0b);
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
