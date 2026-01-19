@@ -82,7 +82,13 @@ export default function GameBoard() {
       const selectedWordLower = selectedWord.toLowerCase();
       const reversedWordLower = reversedWord.toLowerCase();
 
-      if (words.includes(selectedWordLower)) {
+      if (words.includes(selectedWord)) {
+        console.log("Found word:", selectedWord)
+        addFoundWords(selectedWord, startPos, endPos);
+      } else if (words.includes(reversedWord)) {
+        console.log("Found word (reversed):", reversedWord)
+        addFoundWords(reversedWord, startPos, endPos);
+      } else if (words.includes(selectedWordLower)) {
         console.log("Found word:", selectedWordLower)
         addFoundWords(selectedWordLower, startPos, endPos);
       } else if (words.includes(reversedWordLower)) {
