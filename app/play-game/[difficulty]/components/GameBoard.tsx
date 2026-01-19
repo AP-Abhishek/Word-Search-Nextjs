@@ -2,13 +2,12 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import GameCreationAlgorithm from "@/app/algorithm/GameCreationAlgorithm";
+import { useWords } from "./WordsContext";
 
-interface GameBoardProps {
-  gridSize: number;
-  words: string[];
-}
+export default function GameBoard() {
 
-export default function GameBoard({ gridSize, words }: GameBoardProps) {
+  const { gridSize, words, foundPaths, addFoundWords } = useWords();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [boardData, setBoardData] = useState<string[][]>([]);
@@ -75,14 +74,43 @@ export default function GameBoard({ gridSize, words }: GameBoardProps) {
     setEndPos(snappedEnd);
   };
 
-
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     if (isSelecting && startPos && endPos) {
-      console.log("Selected from:", startPos, "to:", endPos);
+      const selectedWord = getSelectedWord(startPos, endPos);
+      const reversedWord = selectedWord.split("").reverse().join("");
+      
+      const selectedWordLower = selectedWord.toLowerCase();
+      const reversedWordLower = reversedWord.toLowerCase();
+
+      if (words.includes(selectedWordLower)) {
+        console.log("Found word:", selectedWordLower)
+        addFoundWords(selectedWordLower, startPos, endPos);
+      } else if (words.includes(reversedWordLower)) {
+        console.log("Found word (reversed):", reversedWordLower)
+        addFoundWords(reversedWordLower, startPos, endPos);
+      }
     }
+
     setIsSelecting(false);
     setStartPos(null);
     setEndPos(null);
+  }, [isSelecting, startPos, endPos, words, boardData]);
+
+  const getSelectedWord = (start: { r: number, c: number }, end: { r: number, c: number }) => {
+    let word = "";
+    const dr = end.r - start.r;
+    const dc = end.c - start.c;
+
+    const stepR = dr === 0 ? 0 : dr / Math.abs(dr);
+    const stepC = dc === 0 ? 0 : dc / Math.abs(dc);
+    const steps = Math.max(Math.abs(dr), Math.abs(dc));
+
+    for (let i = 0; i <= steps; i++) {
+      const r = start.r + i * stepR;
+      const c = start.c + i * stepC;
+      word += boardData[r][c];
+    }
+    return word;
   };
 
   useEffect(() => {
@@ -119,6 +147,8 @@ export default function GameBoard({ gridSize, words }: GameBoardProps) {
     canvas.style.height = `${size}px`;
     ctx.scale(dpr, dpr);
 
+    ctx.clearRect(0, 0, size, size);
+
     const cellSize = size / gridSize;
     const fontSize = cellSize * 0.5;
 
@@ -127,15 +157,36 @@ export default function GameBoard({ gridSize, words }: GameBoardProps) {
     ctx.roundRect(0, 0, size, size, 8);
     ctx.fill();
 
+    foundPaths.forEach((path) => {
+      ctx.beginPath();
+      ctx.lineWidth = cellSize * 0.7;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = path.color;
+      ctx.moveTo(path.start.c * cellSize + cellSize / 2, path.start.r * cellSize + cellSize / 2);
+      ctx.lineTo(path.end.c * cellSize + cellSize / 2, path.end.r * cellSize + cellSize / 2);
+      ctx.stroke();
+    });
+
+    if (isSelecting && startPos && endPos) {
+      ctx.beginPath();
+      ctx.lineWidth = cellSize * 0.7;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "rgba(59, 130, 246, 0.3)";
+      ctx.moveTo(startPos.c * cellSize + cellSize / 2, startPos.r * cellSize + cellSize / 2);
+      ctx.lineTo(endPos.c * cellSize + cellSize / 2, endPos.r * cellSize + cellSize / 2);
+      ctx.stroke();
+    }
+
+
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = `900 ${fontSize}px Inter, system-ui, -apple-system, sans-serif`;
+    ctx.fillStyle = "#0f172a";
 
     boardData.forEach((row, rowIndex) => {
       row.forEach((char, colIndex) => {
         const x = colIndex * cellSize + cellSize / 2;
         const y = rowIndex * cellSize + cellSize / 2;
-        ctx.fillStyle = "#0f172a";
         ctx.fillText(char, x, y);
       });
     });
@@ -147,25 +198,7 @@ export default function GameBoard({ gridSize, words }: GameBoardProps) {
       ctx.beginPath(); ctx.moveTo(pos, 0); ctx.lineTo(pos, size); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(0, pos); ctx.lineTo(size, pos); ctx.stroke();
     }
-
-    if (isSelecting && startPos && endPos) {
-      const cellSize = size / gridSize;
-
-      ctx.beginPath();
-      ctx.lineWidth = cellSize * 0.7;
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "rgba(59, 130, 246, 0.4)";
-
-      const startX = startPos.c * cellSize + cellSize / 2;
-      const startY = startPos.r * cellSize + cellSize / 2;
-      const endX = endPos.c * cellSize + cellSize / 2;
-      const endY = endPos.r * cellSize + cellSize / 2;
-
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, endY);
-      ctx.stroke();
-    }
-  }, [boardData, gridSize, isSelecting, startPos, endPos]);
+  }, [boardData, gridSize, isSelecting, startPos, endPos, foundPaths]);
 
   useEffect(() => {
     if (!mounted || boardData.length === 0) return;
@@ -181,7 +214,7 @@ export default function GameBoard({ gridSize, words }: GameBoardProps) {
     }
 
     return () => resizeObserver.disconnect();
-  }, [mounted, boardData, drawBoard]);
+  }, [mounted, boardData, drawBoard, foundPaths]);
 
   if (!mounted) return <div className="h-full w-full bg-slate-100 animate-pulse" />;
 
@@ -198,6 +231,7 @@ export default function GameBoard({ gridSize, words }: GameBoardProps) {
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
           onTouchStart={handleMouseDown}
           onTouchMove={handleMouseMove}
           onTouchEnd={handleMouseUp}

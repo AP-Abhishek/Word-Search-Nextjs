@@ -1,6 +1,7 @@
 import GameBoard from "./components/GameBoard";
 import GenerateWords from "./components/GenerateWords";
 import WordsContainer from "./components/WordsContainer";
+import { WordsProvider } from "./components/WordsContext";
 
 interface PlayNewGameProps {
   params: Promise<{ difficulty: string }>;
@@ -8,16 +9,16 @@ interface PlayNewGameProps {
 }
 
 export default async function PlayNewGame({ params, searchParams }: PlayNewGameProps) {
-  
+
   const { difficulty } = await params;
   const sParams = await searchParams;
-  
+
   const rawWords = sParams.words as string | undefined;
   let words = rawWords ? decodeURIComponent(rawWords).split(",") : [];
-  
+
   const rawGridSize = sParams["grid-size"] as string | undefined;
   const urlGridSize = rawGridSize ? Number(decodeURIComponent(rawGridSize)) : 0;
-  
+
   let gridSize: number;
   let wordLimit: number;
   switch (difficulty) {
@@ -48,15 +49,15 @@ export default async function PlayNewGame({ params, searchParams }: PlayNewGameP
 
   return (
     <div className="w-full min-h-screen md:h-screen flex flex-col md:flex-row items-center justify-center p-4 md:p-8 gap-4 md:gap-8 overflow-hidden">
+      <WordsProvider initialGridSize={gridSize} initialWords={words}>
+        <aside className="w-full md:w-80 shrink-0 max-h-[30vh] md:max-h-full">
+          <WordsContainer />
+        </aside>
 
-      <aside className="w-full md:w-80 shrink-0 max-h-[30vh] md:max-h-full">
-        <WordsContainer words={words} />
-      </aside>
-
-      <main className="flex-1 h-full flex-center relative">
-        <GameBoard gridSize={gridSize} words={words} />
-      </main>
-
+        <main className="flex-1 h-full flex-center relative">
+          <GameBoard />
+        </main>
+      </WordsProvider>
     </div>
   );
 }

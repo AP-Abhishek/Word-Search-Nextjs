@@ -3,13 +3,12 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, AlertCircle, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useWords } from "./WordsContext";
 
-interface WordsContainerProps {
-  words: string[];
-}
+export default function WordsContainer() {
 
-export default function WordsContainer({ words }: WordsContainerProps) {
-  const [foundWords, setFoundWords] = useState<string[]>([]);
+  const { words, foundWords } = useWords();
+
   const [showQuitModal, setShowQuitModal] = useState(false);
   const router = useRouter();
 
