@@ -1,4 +1,5 @@
 import GameBoard from "./components/GameBoard";
+import GenerateWords from "./components/GenerateWords";
 import WordsContainer from "./components/WordsContainer";
 
 interface PlayNewGameProps {
@@ -12,27 +13,37 @@ export default async function PlayNewGame({ params, searchParams }: PlayNewGameP
   const sParams = await searchParams;
   
   const rawWords = sParams.words as string | undefined;
-  const words = rawWords ? decodeURIComponent(rawWords).split(",") : [];
+  let words = rawWords ? decodeURIComponent(rawWords).split(",") : [];
   
   const rawGridSize = sParams["grid-size"] as string | undefined;
   const urlGridSize = rawGridSize ? Number(decodeURIComponent(rawGridSize)) : 0;
   
   let gridSize: number;
+  let wordLimit: number;
   switch (difficulty) {
     case "easy":
       gridSize = 8;
+      wordLimit = 6;
       break;
     case "medium":
       gridSize = 12;
+      wordLimit = 10;
       break;
     case "hard":
       gridSize = 16;
+      wordLimit = 14;
       break;
     case "custom":
       gridSize = urlGridSize;
+      wordLimit = words.length;
       break;
     default:
       gridSize = 8;
+      wordLimit = 6;
+  }
+
+  if (words.length === 0) {
+    words = await GenerateWords({ gridSize: gridSize, wordLimit: wordLimit });
   }
 
   return (
