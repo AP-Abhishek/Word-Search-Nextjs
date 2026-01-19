@@ -14,6 +14,77 @@ export default function GameBoard({ gridSize, words }: GameBoardProps) {
   const [boardData, setBoardData] = useState<string[][]>([]);
   const [mounted, setMounted] = useState(false);
 
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [startPos, setStartPos] = useState<{ r: number; c: number } | null>(null);
+  const [endPos, setEndPos] = useState<{ r: number; c: number } | null>(null);
+
+  const getGridCoords = (e: React.MouseEvent | React.TouchEvent) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+
+    const rect = canvas.getBoundingClientRect();
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    const cellSize = rect.width / gridSize;
+    const c = Math.floor(x / cellSize);
+    const r = Math.floor(y / cellSize);
+
+    if (r >= 0 && r < gridSize && c >= 0 && c < gridSize) {
+      return { r, c };
+    }
+    return null;
+  };
+
+  const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
+    const coords = getGridCoords(e);
+    if (coords) {
+      setIsSelecting(true);
+      setStartPos(coords);
+      setEndPos(coords);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isSelecting || !startPos) return;
+
+    const coords = getGridCoords(e);
+    if (!coords) return;
+
+    const rowDiff = coords.r - startPos.r;
+    const colDiff = coords.c - startPos.c;
+
+    const absRowDiff = Math.abs(rowDiff);
+    const absColDiff = Math.abs(colDiff);
+
+    let snappedEnd = { r: startPos.r, c: startPos.c };
+
+    if (rowDiff === 0 || colDiff === 0 || absRowDiff === absColDiff) {
+      snappedEnd = coords;
+    } else {
+      if (absRowDiff > absColDiff) {
+        snappedEnd = { r: coords.r, c: startPos.c };
+      } else {
+        snappedEnd = { r: startPos.r, c: coords.c };
+      }
+    }
+
+    setEndPos(snappedEnd);
+  };
+
+
+  const handleMouseUp = () => {
+    if (isSelecting && startPos && endPos) {
+      console.log("Selected from:", startPos, "to:", endPos);
+    }
+    setIsSelecting(false);
+    setStartPos(null);
+    setEndPos(null);
+  };
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -76,11 +147,29 @@ export default function GameBoard({ gridSize, words }: GameBoardProps) {
       ctx.beginPath(); ctx.moveTo(pos, 0); ctx.lineTo(pos, size); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(0, pos); ctx.lineTo(size, pos); ctx.stroke();
     }
-  }, [boardData, gridSize]);
+
+    if (isSelecting && startPos && endPos) {
+      const cellSize = size / gridSize;
+
+      ctx.beginPath();
+      ctx.lineWidth = cellSize * 0.7;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "rgba(59, 130, 246, 0.4)";
+
+      const startX = startPos.c * cellSize + cellSize / 2;
+      const startY = startPos.r * cellSize + cellSize / 2;
+      const endX = endPos.c * cellSize + cellSize / 2;
+      const endY = endPos.r * cellSize + cellSize / 2;
+
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+    }
+  }, [boardData, gridSize, isSelecting, startPos, endPos]);
 
   useEffect(() => {
     if (!mounted || boardData.length === 0) return;
-    
+
     drawBoard();
 
     const resizeObserver = new ResizeObserver(() => {
@@ -106,8 +195,15 @@ export default function GameBoard({ gridSize, words }: GameBoardProps) {
       <div className="p-2 md:p-2 flex items-center justify-center h-full max-w-full bg-white/70 rounded-md shadow-md shadow-black/15">
         <canvas
           ref={canvasRef}
-          className="cursor-crosshair touch-none rounded-md max-w-full max-h-full"
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchMove={handleMouseMove}
+          onTouchEnd={handleMouseUp}
+          className="cursor-pointer touch-none rounded-md max-w-full max-h-full"
         />
+
       </div>
     </motion.div>
   );
