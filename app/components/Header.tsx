@@ -31,7 +31,7 @@ export default function Header() {
       <motion.img
         variants={logoVariants}
         whileHover="hover"
-        src="favicon.ico"
+        src="/favicon.ico"
         alt="logo"
         className="size-12 sm:size-14 md:size-16 drop-shadow-2xl relative z-10 cursor-pointer"
       />
