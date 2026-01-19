@@ -91,7 +91,7 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
         <motion.button
           onClick={handleBackClick}
           whileHover={{ x: -4 }}
-          className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors text-xs font-black uppercase tracking-widest"
+          className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors text-sm sm:text-base font-black uppercase tracking-widest"
         >
           <ChevronLeft size={16} /> BACK
         </motion.button>
@@ -185,11 +185,11 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
         </AnimatePresence>
 
         <motion.button
-          whileHover={{ y: -4, scale: 1.01 }}
+          whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="button"
           disabled={newWords.length === 0}
-          className="w-full h-16 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl text-white font-black text-sm tracking-[0.3em] shadow-xl disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-3 relative overflow-hidden group"
+          className="w-full h-16 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl text-white font-black text-sm tracking-[0.3em] shadow-xl disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-3 relative overflow-hidden group hover:shadow-2xl transition-shadow"
           onClick={(e) => {
             const words = encodeURIComponent(newWords.join(","));
             const encodedGridSize = encodeURIComponent(gridSize);
@@ -213,41 +213,74 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
               onClick={() => difficulty !== 'custom' && setShowSettingsModal(false)}
             />
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              initial={{ scale: 0.85, opacity: 0, y: 30 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              exit={{ scale: 0.85, opacity: 0, y: 30 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
               className="relative w-full max-w-sm bg-white rounded-3xl p-8 shadow-2xl border border-slate-100"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="p-4 bg-indigo-50 rounded-2xl mb-4">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.1, type: "spring" }}
+                  className="p-4 bg-indigo-50 rounded-2xl mb-4"
+                >
                   <Settings2 className="w-8 h-8 text-indigo-500" />
-                </div>
-                <h2 className="text-xl font-black text-slate-800 mb-2">Custom Settings</h2>
-                <p className="text-sm text-slate-500 mb-4 font-medium">Configure your game</p>
+                </motion.div>
+                <motion.h2 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 }}
+                  className="text-2xl font-black text-slate-800 mb-2"
+                >
+                  Custom Settings
+                </motion.h2>
+                <motion.p 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-sm text-slate-500 mb-6 font-medium"
+                >
+                  Configure your game
+                </motion.p>
                 
-                <div className="w-full mb-6">
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                  className="w-full mb-6"
+                >
                   <label className="text-xs font-bold text-slate-600 mb-2 block">Grid Size (Max 20)</label>
                   <input
                     type="number" min="1" max="20" value={tempGridSize}
                     onChange={(e) => setTempGridSize(e.target.value)}
-                    className="w-full h-12 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center text-lg font-black text-slate-700 outline-none"
+                    className="w-full h-12 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center text-lg font-black text-slate-700 outline-none focus:border-indigo-300 focus:ring-4 focus:ring-indigo-50 transition-all"
                   />
-                </div>
+                </motion.div>
 
-                <div className="w-full mb-6">
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="w-full mb-6"
+                >
                   <label className="text-xs font-bold text-slate-600 mb-2 block">Word Limit (Max 20)</label>
                   <input
                     type="number" min="1" max="20" value={tempLimit}
                     onChange={(e) => setTempLimit(e.target.value)}
-                    className="w-full h-12 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center text-lg font-black text-slate-700 outline-none"
+                    className="w-full h-12 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center text-lg font-black text-slate-700 outline-none focus:border-indigo-300 focus:ring-4 focus:ring-indigo-50 transition-all"
                   />
-                </div>
+                </motion.div>
 
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.35 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={handleSetCustomSettings}
-                  className="w-full h-14 bg-indigo-500 text-white rounded-2xl font-black tracking-widest shadow-lg"
+                  className="w-full h-14 bg-indigo-500 text-white rounded-2xl font-black tracking-widest shadow-lg hover:shadow-xl hover:shadow-indigo-200 transition-shadow"
                 >
                   APPLY SETTINGS
                 </motion.button>

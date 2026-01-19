@@ -88,7 +88,7 @@ export default function PlayGame() {
         ))}
       </section>
 
-      <Link href="/" className="mt-6 text-slate-500 hover:text-slate-800 font-semibold transition-colors text-xs uppercase tracking-widest">
+      <Link href="/" className="mt-6 text-slate-500 hover:text-slate-800 font-semibold transition-colors text-sm sm:text-base uppercase tracking-widest">
         ← Back to Menu
       </Link>
     </div>

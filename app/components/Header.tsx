@@ -8,8 +8,8 @@ const headerVariants = {
 };
 
 const logoVariants = {
-  initial: { rotate: 0, scale: 1 },
-  hover: { rotate: 360, scale: 1.1, transition: { duration: 0.6 } }
+  initial: { scale: 1 },
+  hover: { scale: 1.15, transition: { duration: 0.3 } }
 };
 
 const titleVariants = {

@@ -22,5 +22,6 @@ export default async function GenerateWords({
       shortlistedWords.push(newWord);
     }
   }
+  shortlistedWords = shortlistedWords.map(word => word.toUpperCase());
   return shortlistedWords;
 }
