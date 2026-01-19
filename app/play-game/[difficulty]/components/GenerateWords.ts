@@ -12,14 +12,15 @@ export default async function GenerateWords({
   );
   const data = await res.json();
 
-  const candidateWords = data.filter(
+  const candidateWords: string[] = data.filter(
     (word: string) => word.length <= gridSize,
   );
   let shortlistedWords: string[] = [];
   while (shortlistedWords.length !== wordLimit) {
-    shortlistedWords.push(
-      candidateWords[Math.floor(Math.random() * candidateWords.length)],
-    );
+    const newWord: string = candidateWords[Math.floor(Math.random() * candidateWords.length)];
+    if (!shortlistedWords.find(word => word === newWord)) {
+      shortlistedWords.push(newWord);
+    }
   }
   return shortlistedWords;
 }
