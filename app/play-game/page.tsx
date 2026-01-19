@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Zap, Flame, Skull } from "lucide-react";
+import { useEffect } from "react";
 
 const buttonVariants = {
   initial: { scale: 1, y: 0 },
@@ -42,7 +43,7 @@ const difficulties = [
 export default function PlayGame() {
   return (
     <div className="flex flex-col items-center justify-center h-full w-full max-w-sm mx-auto px-6 py-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-6"

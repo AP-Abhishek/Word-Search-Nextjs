@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, AlertCircle, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -14,8 +14,17 @@ export default function WordsContainer({ words }: WordsContainerProps) {
   const router = useRouter();
 
   const handleQuit = () => {
-    router.push("/play-game");
+    router.replace("/play-game");
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      router.replace("/play-game");
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [router]);
 
   return (
     <>

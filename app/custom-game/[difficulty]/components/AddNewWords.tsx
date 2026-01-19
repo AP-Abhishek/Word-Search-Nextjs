@@ -2,7 +2,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, X, Type, Eraser, Settings2, AlertCircle, ChevronLeft } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import GameCreationAlgorithm from "@/app/algorithm/GameCreationAlgorithm";
 import { redirect } from "next/navigation";
 
@@ -19,6 +19,7 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
   const [tempLimit, setTempLimit] = useState<string>("10");
   const [tempGridSize, setTempGridSize] = useState<string>("8");
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSetCustomSettings = () => {
     const limitVal = parseInt(tempLimit);
@@ -28,6 +29,10 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
       setGridSize(gridVal);
       setShowSettingsModal(false);
     }
+  };
+
+  const handleBackClick = () => {
+    router.push("/custom-game");
   };
 
   const addNewWord = (e: FormEvent) => {
@@ -83,14 +88,13 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] w-full max-w-2xl mx-auto p-2 md:p-6 relative">
       <div className="w-full flex justify-start mb-4">
-        <Link href="/custom-game">
-          <motion.button
-            whileHover={{ x: -4 }}
-            className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors text-xs font-black uppercase tracking-widest"
-          >
-            <ChevronLeft size={16} /> BACK
-          </motion.button>
-        </Link>
+        <motion.button
+          onClick={handleBackClick}
+          whileHover={{ x: -4 }}
+          className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors text-xs font-black uppercase tracking-widest"
+        >
+          <ChevronLeft size={16} /> BACK
+        </motion.button>
       </div>
 
       <motion.div
