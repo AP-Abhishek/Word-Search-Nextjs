@@ -144,12 +144,13 @@ export default function AddNewWords({ difficulty }: AddNewWordsProps) {
           </div>
           <input
             type="text"
-            maxLength={Math.max()}
+            maxLength={gridSize}
             disabled={newWords.length >= limit}
             placeholder={newWords.length >= limit ? "LIMIT REACHED" : "ENTER WORD"}
             value={word}
             onChange={(e) => {
-              setWord(e.target.value);
+              const val = e.target.value.replace(/[^a-zA-Z]/g, "");
+              setWord(val);
               if (error) setError(null);
             }}
             className={`w-full h-14 pl-12 pr-16 bg-white border-2 rounded-2xl outline-none focus:ring-4 transition-all text-sm font-bold tracking-[0.2em] placeholder:text-slate-300 disabled:bg-slate-50 ${error ? "border-red-400 focus:ring-red-50" : "border-slate-100 focus:border-pink-300 focus:ring-pink-50"
