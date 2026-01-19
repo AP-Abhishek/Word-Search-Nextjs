@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, AlertCircle, LogOut } from "lucide-react";
+import { Search, AlertCircle, LogOut, RotateCcw, Settings, PlusCircle, Home, Trophy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useWords } from "./WordsContext";
 
@@ -10,11 +10,23 @@ export default function WordsContainer() {
   const { words, foundWords } = useWords();
 
   const [showQuitModal, setShowQuitModal] = useState(false);
+  const [showWinModal, setShowWinModal] = useState(false);
   const router = useRouter();
 
-  const handleQuit = () => {
-    router.replace("/play-game");
-  };
+  const isGameWon = words.length > 0 && foundWords.length === words.length;
+
+  useEffect(() => {
+    if (isGameWon) {
+      const timer = setTimeout(() => setShowWinModal(true), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isGameWon]);
+
+  const handleQuit = () => router.replace("/play-game");
+  const handlePlayAgain = () => window.location.reload();
+  const handleChangeDifficulty = () => router.replace("/play-game");
+  const handleCustomGame = () => router.replace("/custom-game");
+  const handleHome = () => router.replace("/");
 
   useEffect(() => {
     const handlePopState = () => {
@@ -65,8 +77,8 @@ export default function WordsContainer() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className={`px-2.5 py-1 md:px-3 md:py-1.5 rounded-full border text-[10px] md:text-xs font-black tracking-widest transition-all ${isFound
-                        ? "bg-emerald-500 border-emerald-500 text-white line-through"
-                        : "bg-white border-slate-200 text-slate-600 shadow-xs"
+                      ? "bg-emerald-500 border-emerald-500 text-white line-through"
+                      : "bg-white border-slate-200 text-slate-600 shadow-xs"
                       }`}
                   >
                     {word}
@@ -91,6 +103,48 @@ export default function WordsContainer() {
           </div>
         </div>
       </motion.div>
+
+      <AnimatePresence>
+        {showWinModal && (
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-emerald-900/40 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              className="relative w-full max-w-sm bg-white rounded-[2.5rem] p-8 shadow-2xl border-4 border-emerald-100 text-center"
+            >
+              <motion.div
+                animate={{ rotate: [0, -10, 10, -10, 0], scale: [1, 1.2, 1] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="inline-flex p-4 bg-emerald-100 rounded-full mb-4"
+              >
+                <Trophy className="w-12 h-12 text-emerald-600" />
+              </motion.div>
+
+              <h2 className="text-3xl font-black text-slate-800 mb-1 tracking-tight">YOU WON!</h2>
+              <p className="text-slate-500 font-medium mb-8">Amazing job! You found all words.</p>
+
+              <div className="grid grid-cols-1 gap-3">
+                <button onClick={handlePlayAgain} className="flex items-center justify-center gap-3 w-full h-14 bg-emerald-500 text-white rounded-2xl font-black tracking-widest shadow-lg shadow-emerald-100 hover:cursor-pointer">
+                  <RotateCcw size={18} /> PLAY AGAIN
+                </button>
+                <button onClick={handleChangeDifficulty} className="flex items-center justify-center gap-3 w-full h-14 bg-blue-500 text-white rounded-2xl font-black tracking-widest shadow-lg shadow-blue-100 hover:cursor-pointer">
+                  <Settings size={18} /> NEW DIFFICULTY
+                </button>
+                <button onClick={handleCustomGame} className="flex items-center justify-center gap-3 w-full h-14 bg-purple-500 text-white rounded-2xl font-black tracking-widest shadow-lg shadow-purple-100 hover:cursor-pointer">
+                  <PlusCircle size={18} /> CUSTOM GAME
+                </button>
+                <button onClick={handleHome} className="flex items-center justify-center gap-3 w-full h-14 bg-slate-100 text-slate-600 rounded-2xl font-black tracking-widest hover:cursor-pointer">
+                  <Home size={18} /> HOME
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {showQuitModal && (
