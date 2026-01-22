@@ -231,7 +231,7 @@ export default function GameBoard() {
       ref={containerRef}
       className="w-full h-full min-h-[50vh] flex items-center justify-center p-0 sm:p-1 md:p-4"
     >
-      <div className="p-2 md:p-2 flex items-center justify-center h-full max-w-full bg-white/70 rounded-md shadow-md shadow-black/15">
+      <div className="p-2 flex items-center justify-center h-full max-w-full bg-white/70 rounded-md shadow-md shadow-black/15">
         <canvas
           ref={canvasRef}
           onMouseDown={handleMouseDown}
