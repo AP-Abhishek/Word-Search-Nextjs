@@ -6,22 +6,34 @@ interface GenerateWordsProps {
 export default async function GenerateWords({
   gridSize,
   wordLimit,
-}: GenerateWordsProps) {
-  const res = await fetch(
-    `https://random-word-api.herokuapp.com/word?number=100`,
-  );
-  const data = await res.json();
+}: GenerateWordsProps): Promise<string[]> {
+  const res = await fetch(`https://random-word-api.herokuapp.com/word?number=200`);
+  const data: string[] = await res.json();
+  
+  const uniqueWords = Array.from(new Set(data.map((w) => w.toUpperCase())));
 
-  const candidateWords: string[] = data.filter(
-    (word: string) => word.length <= gridSize,
+  const longCandidates = uniqueWords.filter(
+    (w) => w.length === gridSize || w.length === gridSize - 1
   );
-  let shortlistedWords: string[] = [];
-  while (shortlistedWords.length !== wordLimit) {
-    const newWord: string = candidateWords[Math.floor(Math.random() * candidateWords.length)];
-    if (!shortlistedWords.find(word => word === newWord)) {
-      shortlistedWords.push(newWord);
-    }
+  const shortCandidates = uniqueWords.filter(
+    (w) => w.length >= 2 && w.length <= gridSize - 2
+  );
+
+  const result: string[] = [];
+
+  if (longCandidates.length > 0) {
+    const randomIdx = Math.floor(Math.random() * longCandidates.length);
+    result.push(longCandidates[randomIdx]);
   }
-  shortlistedWords = shortlistedWords.map(word => word.toUpperCase());
-  return shortlistedWords;
+
+  const shuffledShort = [...shortCandidates];
+  for (let i = shuffledShort.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledShort[i], shuffledShort[j]] = [shuffledShort[j], shuffledShort[i]];
+  }
+
+  const needed = wordLimit - result.length;
+  result.push(...shuffledShort.slice(0, needed));
+
+  return result;
 }
