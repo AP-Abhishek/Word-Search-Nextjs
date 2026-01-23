@@ -1,5 +1,5 @@
 "use client";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
 
 interface Position {
   r: number;
@@ -16,6 +16,7 @@ interface FoundPath {
 interface WordsContextType {
   gridSize: number;
   words: string[];
+  setWords: Dispatch<SetStateAction<string[]>>;
   foundWords: string[];
   foundPaths: FoundPath[];
   addFoundWords: (word: string, start: Position, end: Position) => void;
@@ -32,6 +33,7 @@ export function WordsProvider({
   initialWords: string[],
   initialGridSize: number
 }) {
+  const [words, setWords] = useState<string[]>(initialWords);
   const [foundPaths, setFoundPaths] = useState<FoundPath[]>([]);
 
   const addFoundWords = (word: string, start: Position, end: Position) => {
@@ -50,7 +52,8 @@ export function WordsProvider({
   return (
     <WordsContext.Provider value={{
       gridSize: initialGridSize,
-      words: initialWords,
+      words: words,
+      setWords: setWords,
       foundWords: foundWords,
       foundPaths: foundPaths,
       addFoundWords: addFoundWords
