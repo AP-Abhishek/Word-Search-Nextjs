@@ -6,7 +6,8 @@ import { useWords } from "./WordsContext";
 
 export default function GameBoard() {
 
-  const { gridSize, words, foundPaths, addFoundWords } = useWords();
+  const { gridSize, words, setWords, foundPaths, addFoundWords } = useWords();
+  const lastGeneratedWords = useRef<string>("");
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -78,7 +79,7 @@ export default function GameBoard() {
     if (isSelecting && startPos && endPos) {
       const selectedWord = getSelectedWord(startPos, endPos);
       const reversedWord = selectedWord.split("").reverse().join("");
-      
+
       const selectedWordLower = selectedWord.toLowerCase();
       const reversedWordLower = reversedWord.toLowerCase();
 
@@ -124,11 +125,15 @@ export default function GameBoard() {
   }, []);
 
   useEffect(() => {
-    if (words.length > 0) {
-      const data = GameCreationAlgorithm({ gridSize, words });
-      setBoardData(data);
+    const wordsFingerprint = words.join(",");
+
+    if (words.length > 0 && wordsFingerprint !== lastGeneratedWords.current) {
+      const { grid, placedWords } = GameCreationAlgorithm({ gridSize, words });
+      setBoardData(grid);
+      lastGeneratedWords.current = placedWords.join(",");
+      setWords(placedWords);
     }
-  }, [gridSize, words]);
+  }, [gridSize, words, setWords]);
 
   const drawBoard = useCallback(async () => {
     const canvas = canvasRef.current;
@@ -231,7 +236,7 @@ export default function GameBoard() {
       ref={containerRef}
       className="w-full h-full min-h-[50vh] flex items-center justify-center p-0 sm:p-1 md:p-4"
     >
-      <div className="p-2 md:p-2 flex items-center justify-center h-full max-w-full bg-white/70 rounded-md shadow-md shadow-black/15">
+      <div className="p-2 flex items-center justify-center h-full max-w-full bg-white/70 rounded-md shadow-md shadow-black/15">
         <canvas
           ref={canvasRef}
           onMouseDown={handleMouseDown}

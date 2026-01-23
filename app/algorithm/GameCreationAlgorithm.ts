@@ -4,18 +4,23 @@ interface GameCreationAlgorithmProps {
   words: string[];
 }
 
-export default function GameCreationAlgorithm({ gridSize, words }: GameCreationAlgorithmProps): string[][] {
+export default function GameCreationAlgorithm({ gridSize, words }: GameCreationAlgorithmProps): {
+  grid: string[][],
+  placedWords: string[]
+} {
   const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const grid = Array.from({length: gridSize}, () => new Array(gridSize).fill(null));
   const sortedWords = words.sort((a, b) => b.length - a.length);
   const finalWords = sortedWords.map(word => word.toUpperCase());
-  const mappingPositions = [[1, 0], [0, 1], [1, 1], [-1, 0], [0, -1], [-1, -1]];
+  const mappingPositions = [[1, 0], [0, 1], [1, 1], [-1, 0], [0, -1], [-1, -1], [-1, 1], [1, -1]];
+
+  const successfullyPlaced: string[] = [];
 
   for (const word of finalWords) {
     let placed = false;
     let attempts = 0;
 
-    while (!placed && attempts < 100) {
+    while (!placed && attempts < 500) {
       let direction = mappingPositions[Math.floor(Math.random() * mappingPositions.length)];
 
       let startX = Math.floor(Math.random() * gridSize);
@@ -41,19 +46,17 @@ export default function GameCreationAlgorithm({ gridSize, words }: GameCreationA
             grid[startY + (i * direction[1])][startX + (i * direction[0])] = word[i];
           }
           placed = true;
+          successfullyPlaced.push(word);
         }
       }
       attempts++;
     }
   }
 
-  for (let i=0 ; i<grid.length ; i++) {
-    for (let j=0 ; j<grid[i].length ; j++) {
-      if (grid[i][j] === null) {
-        grid[i][j] = alphabets[Math.floor(Math.random() * alphabets.length)];
-      }
-    }
+  return {
+    grid: grid.map(row => 
+      row.map(cell => cell || alphabets[Math.floor(Math.random() * alphabets.length)])
+    ),
+    placedWords: successfullyPlaced
   }
-  
-  return grid as string[][];
 }
