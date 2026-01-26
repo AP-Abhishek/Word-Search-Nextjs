@@ -42,32 +42,32 @@ export default function WordsContainer() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full h-full bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-slate-100 flex flex-col p-4 md:p-6"
+        className="w-full h-full bg-white/90 backdrop-blur-sm rounded-lg sm:rounded-2xl md:rounded-3xl shadow-lg md:shadow-xl border border-slate-100 flex flex-col p-3 sm:p-4 md:p-6"
       >
-        <div className="mb-4 md:mb-6 pb-3 md:pb-4 border-b border-slate-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 md:gap-3">
-              <img src="/favicon.ico" alt="logo" className="size-6 md:size-8 drop-shadow-md" />
-              <h1 className="text-lg md:text-xl font-black text-slate-800 drop-shadow-sm">Word Search</h1>
+        <div className="mb-2 sm:mb-3 md:mb-4 pb-2 sm:pb-3 md:pb-4 border-b border-slate-200 shrink-0">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 md:gap-3 min-w-0">
+              <img src="/favicon.ico" alt="logo" className="size-5 sm:size-6 md:size-8 drop-shadow-md shrink-0" />
+              <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-black text-slate-800 drop-shadow-sm truncate">Word Search</h1>
             </div>
             <button
               onClick={() => setShowQuitModal(true)}
-              className="text-[10px] md:text-xs font-black text-rose-500 hover:text-rose-700 transition-colors uppercase tracking-widest flex items-center gap-1 hover:cursor-pointer hover:underline"
+              className="text-[7px] sm:text-[8px] md:text-xs font-black text-rose-500 hover:text-rose-700 transition-colors uppercase tracking-widest flex items-center gap-0.5 hover:cursor-pointer hover:underline shrink-0"
             >
-              Quit Game
+              Quit
             </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 mb-3 md:mb-6">
-          <div className="p-1.5 bg-pink-100 rounded-lg">
-            <Search className="w-4 h-4 text-pink-600" strokeWidth={3} />
+        <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 mb-2 sm:mb-3 md:mb-4 shrink-0">
+          <div className="p-1 sm:p-1.5 bg-pink-100 rounded-lg shrink-0">
+            <Search className="w-3 sm:w-3.5 md:w-4 h-3 sm:h-3.5 md:h-4 text-pink-600" strokeWidth={3} />
           </div>
-          <h2 className="text-lg md:text-xl font-black text-slate-800 tracking-tight">Word List</h2>
+          <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-black text-slate-800 tracking-tight truncate">Word List</h2>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
-          <div className="flex flex-wrap gap-2">
+        <div className="flex-1 overflow-y-auto min-h-0 content-start">
+          <div className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2">
             <AnimatePresence>
               {words.map((word, index) => {
                 const isFound = foundWords.includes(word);
@@ -76,7 +76,7 @@ export default function WordsContainer() {
                     key={`${word}-${index}`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className={`px-3 py-2 md:px-4 md:py-2.5 rounded-full border text-sm md:text-base font-black tracking-widest transition-all ${isFound
+                    className={`px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full border text-xs sm:text-sm md:text-base font-black tracking-widest transition-all ${isFound
                       ? "bg-emerald-500 border-emerald-500 text-white line-through"
                       : "bg-white border-slate-200 text-slate-700 shadow-xs"
                       }`}
@@ -89,12 +89,12 @@ export default function WordsContainer() {
           </div>
         </div>
 
-        <div className="mt-4 pt-3 border-t border-slate-100">
-          <div className="flex justify-between items-center text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
+        <div className="mt-2 sm:mt-3 md:mt-4 pt-2 sm:pt-3 md:pt-4 border-t border-slate-100 shrink-0">
+          <div className="flex justify-between items-center text-[6px] sm:text-[7px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 sm:mb-1.5">
             <span>Progress</span>
             <span>{foundWords.length}/{words.length}</span>
           </div>
-          <div className="h-1.5 md:h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-1 sm:h-1.5 md:h-2 w-full bg-slate-100 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${(foundWords.length / words.length) * 100}%` }}

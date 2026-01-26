@@ -149,7 +149,7 @@ export default function GameBoard() {
     const rect = container.getBoundingClientRect();
 
     const isMobile = window.innerWidth < 768;
-    const padding = isMobile ? -8 : 48;
+    const padding = isMobile ? -4 : 24;
     const size = Math.min(rect.width, rect.height) - padding;
 
     canvas.width = size * dpr;
@@ -234,9 +234,9 @@ export default function GameBoard() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       ref={containerRef}
-      className="w-full h-full min-h-[50vh] flex items-center justify-center p-0 sm:p-1 md:p-4"
+      className="w-full h-full flex items-center justify-center p-1 sm:p-2 md:p-3 lg:p-4"
     >
-      <div className="p-2 flex items-center justify-center h-full max-w-full bg-white/70 rounded-md shadow-md shadow-black/15">
+      <div className="p-1 sm:p-2 md:p-2.5 flex items-center justify-center bg-white/70 rounded-md shadow-md shadow-black/15 w-fit h-fit">
         <canvas
           ref={canvasRef}
           onMouseDown={handleMouseDown}
