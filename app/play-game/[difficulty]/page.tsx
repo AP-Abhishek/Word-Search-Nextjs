@@ -48,13 +48,13 @@ export default async function PlayNewGame({ params, searchParams }: PlayNewGameP
   }
 
   return (
-    <div className="w-full min-h-screen md:h-screen flex flex-col md:flex-row items-center justify-center p-4 md:p-8 gap-4 md:gap-8 overflow-hidden">
+    <div className="w-full h-screen flex flex-col md:flex-row items-stretch justify-center p-2 sm:p-4 md:p-6 lg:p-8 gap-2 sm:gap-4 md:gap-6 overflow-hidden">
       <WordsProvider initialGridSize={gridSize} initialWords={words}>
-        <aside className="w-full md:w-md shrink-0 max-h-[30vh] md:max-h-full">
+        <aside className="w-full landscape:w-1/2 sm:landscape:w-2/5 md:w-1/3 lg:w-96 shrink-0 grow-0 h-2/5 landscape:h-full md:h-full p-1">
           <WordsContainer />
         </aside>
 
-        <main className="flex-1 h-full flex-center relative">
+        <main className="flex-1 w-full h-3/5 md:h-full relative">
           <GameBoard />
         </main>
       </WordsProvider>
