@@ -1,44 +1,90 @@
-# Word Search
+# Word Search (Next.js)
 
-### A game in which users have to find words, which are hidden within a word matrix.
+A browser-based word search game where players find hidden words in a letter matrix. Built with Next.js, TypeScript, Tailwind CSS, and Framer Motion.
 
-Challenge your vocabulary and sharpen your focus with a modern, interactive puzzle experience. Whether you're playing a classic grid or building your own custom challenges, this app offers seamless gameplay with a clean, responsive interface.
+## Live Demo
 
-***Visit website: [Word Search](https://word-search-by-tuttu.vercel.app/)***
+You can play the game directly in your browser here:
+[Play Word Search](https://word-search-by-tuttu.vercel.app/)
 
-### Tech Stack
-- **Framework:** Next.js (v16)
-- **Styling:** TailwindCSS (v4)
-- **Icons:** lucide-react
-- **Animation:** framer-motion
+## Features
 
-### Folder Structure
+* **Multiple Difficulties:** Choose from different difficulty levels for a puzzle that matches your skill.
+* **Custom Games:** Create your own word search puzzles by adding a personal list of words.
+* **Interactive Board:** Select hidden words directly on the responsive letter matrix.
+* **Word Tracking:** Keep track of the words you have found as you solve the puzzle.
+* **Responsive UI:** Play comfortably on desktop and mobile screens.
+
+## Tech Stack
+
+* **Framework:** Next.js 16
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS 4
+* **Icons:** lucide-react
+* **Animation:** Framer Motion
+
+## How to Run Locally
+
+1. Clone this repository:
+
+    ```bash
+    git clone https://github.com/AP-Abhishek/Word-Search-Nextjs.git
+    ```
+
+2. Move into the project directory:
+
+    ```bash
+    cd Word-Search-Nextjs
+    ```
+
+3. Install the dependencies:
+
+    ```bash
+    npm install
+    ```
+
+4. Start the development server:
+
+    ```bash
+    npm run dev
+    ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Project Structure
 ```
-- app
-    - algorithm
-        - GameCreationAlgorithm.ts
-    - components
-        - Header.tsx
-        - ConditionalHeader.tsx
-        - HomeMenu.tsx
-    - custom-game
-        - [difficulty]
-            - components
-                - AddNewWords.tsx
-            -page.tsx
-        - page.tsx
-    - play-game
-        - [difficulty]
-            - components
-                - GameBoard.tsx
-                - WordContainer.tsx
-                - GenerateWords.ts
-                - WordsContext.tsx
-            - page.tsx
-        - page.tsx
-    - favicon.ico
-    - global.css
-    - layoout.tsx
-    - page.tsx
-- [ Other Configurations ]
+word-search
+├─ app
+│  ├─ algorithm
+│  │  └─ GameCreationAlgorithm.ts
+│  ├─ components
+│  │  ├─ ConditionalHeader.tsx
+│  │  ├─ Header.tsx
+│  │  └─ HomeMenu.tsx
+│  ├─ custom-game
+│  │  ├─ page.tsx
+│  │  └─ [difficulty]
+│  │     ├─ components
+│  │     │  └─ AddNewWords.tsx
+│  │     └─ page.tsx
+│  ├─ favicon.ico
+│  ├─ globals.css
+│  ├─ layout.tsx
+│  ├─ page.tsx
+│  └─ play-game
+│     ├─ page.tsx
+│     └─ [difficulty]
+│        ├─ components
+│        │  ├─ GameBoard.tsx
+│        │  ├─ GenerateWords.ts
+│        │  ├─ WordsContainer.tsx
+│        │  └─ WordsContext.tsx
+│        └─ page.tsx
+├─ eslint.config.mjs
+├─ next.config.ts
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.mjs
+├─ README.md
+└─ tsconfig.json
 ```
